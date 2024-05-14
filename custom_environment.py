@@ -13,12 +13,11 @@ max_cycles_default = 1000
 KILL_REWARD = 0
 minimap_mode_default = False
 default_reward_args = dict(
-    step_reward=-0.005,
-    dead_penalty=-0.0,
-    attack_penalty=-0.0,
+    step_reward=0.5,
+    dead_penalty=0.0,
+    attack_penalty=0.0,
     attack_opponent_reward=0.0,
 )
-
 
 def parallel_env(
     map_size=default_map_size,
@@ -95,18 +94,6 @@ def get_config(
     small = cfg.register_agent_type("small", options)
 
     g0 = cfg.add_group(small)
-    g1 = cfg.add_group(small)
-
-    a = gw.AgentSymbol(g0, index="any")
-    b = gw.AgentSymbol(g1, index="any")
-
-    # reward shaping to encourage attack
-    cfg.add_reward_rule(
-        gw.Event(a, "attack", b), receiver=a, value=attack_opponent_reward
-    )
-    cfg.add_reward_rule(
-        gw.Event(b, "attack", a), receiver=b, value=attack_opponent_reward
-    )
 
     return cfg
 
@@ -143,7 +130,8 @@ class _parallel_env(magent_parallel_env, EzPickle):
             get_config(map_size, minimap_mode, seed, **reward_args), map_size=map_size
         )
 
-        self.agentGroupID = 0
+        self.firstGroupID = 0
+        self.secondGroupID = 1
 
         reward_vals = np.array([KILL_REWARD] + list(reward_args.values()))
         reward_range = [
@@ -167,11 +155,17 @@ class _parallel_env(magent_parallel_env, EzPickle):
         env, map_size, handles = self.env, self.map_size, self.handles
         
         width = height = map_size
-        
-        center_x = width // 2
-        center_y = height // 2
-        
-        # Aggiunta degli agenti 3x3 al centro della griglia
-        for i in range(center_x - 1, center_x + 2):
-            for j in range(center_y - 1, center_y + 2):
-                env.add_agents(handles[self.agentGroupID], method="custom", pos=[[i, j, 0]])
+        init_num = map_size * map_size * 0.04
+        gap = 3
+
+        # left
+        n = init_num
+        side = int(math.sqrt(n)) * 2
+        pos = []
+        for x in range(width // 2 - gap - side, width // 2 - gap - side + side, 2):
+            for y in range((height - side) // 2, (height - side) // 2 + side, 2):
+                if 0 < x < width - 1 and 0 < y < height - 1:
+                    pos.append([x, y, 0])
+        team1_size = len(pos)
+        env.add_agents(handles[self.firstGroupID], method="custom", pos=pos)
+
