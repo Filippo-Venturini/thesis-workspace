@@ -130,8 +130,7 @@ class _parallel_env(magent_parallel_env, EzPickle):
             get_config(map_size, minimap_mode, seed, **reward_args), map_size=map_size
         )
 
-        self.firstGroupID = 0
-        self.secondGroupID = 1
+        self.agentGroupID = 0
 
         reward_vals = np.array([KILL_REWARD] + list(reward_args.values()))
         reward_range = [
@@ -153,7 +152,7 @@ class _parallel_env(magent_parallel_env, EzPickle):
 
     def generate_map(self):
         env, map_size, handles = self.env, self.map_size, self.handles
-        
+
         width = height = map_size
         init_num = map_size * map_size * 0.04
         gap = 3
@@ -166,6 +165,6 @@ class _parallel_env(magent_parallel_env, EzPickle):
             for y in range((height - side) // 2, (height - side) // 2 + side, 2):
                 if 0 < x < width - 1 and 0 < y < height - 1:
                     pos.append([x, y, 0])
-        team1_size = len(pos)
-        env.add_agents(handles[self.firstGroupID], method="custom", pos=pos)
+
+        env.add_agents(handles[self.agentGroupID], method="custom", pos=pos)
 
