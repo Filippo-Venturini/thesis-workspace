@@ -9,11 +9,11 @@ from magent2.environments.magent_env import magent_parallel_env, make_env
 
 
 default_map_size = 45
-max_cycles_default = 1000
+max_cycles_default = 100
 KILL_REWARD = 0
 minimap_mode_default = False
 default_reward_args = dict(
-    step_reward=0.5,
+    step_reward=0.0,
     dead_penalty=0.0,
     attack_penalty=0.0,
     attack_opponent_reward=0.0,
@@ -93,7 +93,13 @@ def get_config(
     }
     small = cfg.register_agent_type("small", options)
 
-    g0 = cfg.add_group(small)
+    g = cfg.add_group(small)
+
+    a = gw.AgentSymbol(g, index="any")
+
+    cfg.add_reward_rule(
+        gw.Event(a, "at", (map_size/2, map_size/2)), receiver=a, value=100
+    )
 
     return cfg
 
