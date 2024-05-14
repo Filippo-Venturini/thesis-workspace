@@ -14,9 +14,9 @@ KILL_REWARD = 0
 minimap_mode_default = False
 default_reward_args = dict(
     step_reward=-0.005,
-    dead_penalty=-0.1,
-    attack_penalty=-0.1,
-    attack_opponent_reward=0.2,
+    dead_penalty=-0.0,
+    attack_penalty=-0.0,
+    attack_opponent_reward=0.0,
 )
 
 
@@ -85,9 +85,9 @@ def get_config(
         "speed": 2,
         "view_range": gw.CircleRange(6),
         "attack_range": gw.CircleRange(1.5),
-        "damage": 2,
+        "damage": 0,
         "kill_reward": KILL_REWARD,
-        "step_recover": 0.1,
+        "step_recover": 0.0,
         "step_reward": step_reward,
         "dead_penalty": dead_penalty,
         "attack_penalty": attack_penalty,
@@ -142,8 +142,9 @@ class _parallel_env(magent_parallel_env, EzPickle):
         env = magent2.GridWorld(
             get_config(map_size, minimap_mode, seed, **reward_args), map_size=map_size
         )
-        self.leftID = 0
-        self.rightID = 1
+
+        self.agentGroupID = 0
+
         reward_vals = np.array([KILL_REWARD] + list(reward_args.values()))
         reward_range = [
             np.minimum(reward_vals, 0).sum(),
@@ -167,12 +168,10 @@ class _parallel_env(magent_parallel_env, EzPickle):
         
         width = height = map_size
         
-        # Calcolo delle coordinate del centro della mappa
         center_x = width // 2
         center_y = height // 2
         
-        # Aggiungi il primo agente al centro della mappa
-        env.add_agents(handles[self.leftID], method="custom", pos=[[center_x, center_y, 0]])
-        
-        # Aggiungi il secondo agente vicino al primo
-        env.add_agents(handles[self.leftID], method="custom", pos=[[center_x + 1, center_y, 0]])
+        # Aggiunta degli agenti 3x3 al centro della griglia
+        for i in range(center_x - 1, center_x + 2):
+            for j in range(center_y - 1, center_y + 2):
+                env.add_agents(handles[self.agentGroupID], method="custom", pos=[[i, j, 0]])
