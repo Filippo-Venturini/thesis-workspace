@@ -5,7 +5,7 @@ from pettingzoo.utils.env import AECEnv
 import pdb
 
 
-def random_demo(env: AECEnv, render: bool = True, episodes: int = 1) -> float:
+def demo(env: AECEnv, render: bool = True, episodes: int = 1) -> float:
     """Runs an env object with random actions."""
     total_reward = 0
     completed_episodes = 0
@@ -24,8 +24,7 @@ def random_demo(env: AECEnv, render: bool = True, episodes: int = 1) -> float:
                 action = random.choice(np.flatnonzero(obs["action_mask"]).tolist())
             else:
                 action = env.action_space(agent).sample()
-                print(env.state())
-                
+                print(obs)
                 pdb.set_trace()
             env.step(action)
         completed_episodes += 1
@@ -49,4 +48,4 @@ def random_demo(env: AECEnv, render: bool = True, episodes: int = 1) -> float:
 #10:bottom
 #11:bottom-right
 
-random_demo(env(render_mode = 'human'), render=True, episodes=1)
+demo(env(render_mode = 'human'), render=True, episodes=1)

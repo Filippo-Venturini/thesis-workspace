@@ -76,7 +76,7 @@ def get_config(
         "length": 1,
         "hp": 10,
         "speed": 2,
-        "view_range": gw.CircleRange(6),
+        "view_range": gw.CircleRange(1),
         "step_recover": 0.0,
         "step_reward": step_reward
     }
@@ -96,7 +96,7 @@ def get_config(
 class _parallel_env(magent_parallel_env, EzPickle):
     metadata = {
         "render_modes": ["human", "rgb_array"],
-        "name": "battle_v4",
+        "name": "custom_environment",
         "render_fps": 5,
     }
 
@@ -160,6 +160,11 @@ class _parallel_env(magent_parallel_env, EzPickle):
                 if 0 < x < width - 1 and 0 < y < height - 1:
                     pos.append([x, y, 0]) """
 
-        env.add_agents(handles[self.agentGroupID], method="custom", pos=[[map_size/2,map_size/2,0]])
+        center = int(map_size/2)
+        env.add_agents(handles[self.agentGroupID], method="custom", pos=[[center,center,0]])
+        env.add_agents(handles[self.agentGroupID], method="custom", pos=[[center-1,center,0]])
+
+        
+        print(env.get_pos(handles[self.agentGroupID]))
         
 
