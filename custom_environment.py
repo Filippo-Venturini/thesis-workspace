@@ -10,13 +10,10 @@ from magent2.environments.magent_env import magent_parallel_env, make_env
 
 default_map_size = 45
 max_cycles_default = 100
-KILL_REWARD = 0
+
 minimap_mode_default = False
 default_reward_args = dict(
-    step_reward=0.0,
-    dead_penalty=0.0,
-    attack_penalty=0.0,
-    attack_opponent_reward=0.0,
+    step_reward=0.0
 )
 
 def parallel_env(
@@ -63,10 +60,7 @@ def get_config(
     map_size,
     minimap_mode,
     seed,
-    step_reward,
-    dead_penalty,
-    attack_penalty,
-    attack_opponent_reward,
+    step_reward
 ):
     gw = magent2.gridworld
     cfg = gw.Config()
@@ -83,13 +77,8 @@ def get_config(
         "hp": 10,
         "speed": 2,
         "view_range": gw.CircleRange(6),
-        "attack_range": gw.CircleRange(1.5),
-        "damage": 0,
-        "kill_reward": KILL_REWARD,
         "step_recover": 0.0,
-        "step_reward": step_reward,
-        "dead_penalty": dead_penalty,
-        "attack_penalty": attack_penalty,
+        "step_reward": step_reward
     }
     small = cfg.register_agent_type("small", options)
 
@@ -138,7 +127,7 @@ class _parallel_env(magent_parallel_env, EzPickle):
 
         self.agentGroupID = 0
 
-        reward_vals = np.array([KILL_REWARD] + list(reward_args.values()))
+        reward_vals = list(reward_args.values())
         reward_range = [
             np.minimum(reward_vals, 0).sum(),
             np.maximum(reward_vals, 0).sum(),
@@ -172,4 +161,5 @@ class _parallel_env(magent_parallel_env, EzPickle):
                     pos.append([x, y, 0]) """
 
         env.add_agents(handles[self.agentGroupID], method="custom", pos=[[map_size/2,map_size/2,0]])
+        
 
