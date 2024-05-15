@@ -22,6 +22,7 @@ class QLearningAgent:
             return np.argmax(self.q_table[state])
 
     def learn(self, state, action, reward, next_state):
+        print(state)
         best_next_action = np.argmax(self.q_table[next_state])
         td_target = reward + self.discount_factor * self.q_table[next_state][best_next_action]
         td_error = td_target - self.q_table[state][action]

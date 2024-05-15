@@ -24,7 +24,7 @@ def random_demo(env: AECEnv, render: bool = True, episodes: int = 1) -> float:
                 action = random.choice(np.flatnonzero(obs["action_mask"]).tolist())
             else:
                 action = env.action_space(agent).sample()
-                print(obs)
+                print(env.state)
                 pdb.set_trace()
             env.step(action)
 
