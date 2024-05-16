@@ -13,7 +13,7 @@ max_cycles_default = 100
 
 minimap_mode_default = True
 default_reward_args = dict(
-    step_reward=-0.1
+    step_reward=-0.0
 )
 
 def parallel_env(
@@ -74,10 +74,8 @@ def get_config(
     options = {
         "width": 1,
         "length": 1,
-        "hp": 10,
         "speed": 2,
         "view_range": gw.CircleRange(1),
-        "step_recover": 0.0,
         "step_reward": step_reward
     }
     small = cfg.register_agent_type("small", options)
@@ -87,7 +85,7 @@ def get_config(
     a = gw.AgentSymbol(g, index="any")
 
     cfg.add_reward_rule(
-        gw.Event(a, "at", (map_size/2, map_size/2)), receiver=a, value=100
+        gw.Event(a, "at", (20, 20)), receiver=a, value=100
     )
 
     return cfg
@@ -126,6 +124,8 @@ class _parallel_env(magent_parallel_env, EzPickle):
         )
 
         self.agentGroupID = 0
+
+        print(env.get_action_space(env.get_handles()[self.agentGroupID]))
 
         reward_vals = list(reward_args.values())
         reward_range = [

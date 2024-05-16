@@ -3,7 +3,7 @@ import random
 from pettingzoo.utils.env import AECEnv
 
 class QLearningAgent:
-    def __init__(self, env: AECEnv, agent, learning_rate=0.1, discount_factor=0.99, epsilon=1.0, epsilon_decay=0.995, epsilon_min=0.01):
+    def __init__(self, env: AECEnv, agent, learning_rate=0.1, discount_factor=0.99, epsilon=0.99, epsilon_decay=0.99, epsilon_min=0.01):
         self.env = env
         self.agent = agent
         n_observation = np.prod(env.state().shape[:2])
@@ -19,7 +19,6 @@ class QLearningAgent:
         self.q_table[0][1]
 
     def choose_action(self, state):
-        print(state)
         state_coordinates = self.get_table_coordinates(state)
 
         if random.uniform(0, 1) < self.epsilon:
@@ -71,3 +70,5 @@ class QLearningAgent:
                 state = next_state
             print("Completed episode: ", completed_episodes)
             completed_episodes += 1
+
+        print("Total reward after training: ", total_reward)

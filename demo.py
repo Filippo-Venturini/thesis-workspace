@@ -26,6 +26,7 @@ def demo(env: AECEnv, policy, render: bool = True, episodes: int = 1) -> float:
                 print(obs[0][0][-2:]) """
                 state = obs[0][0][-2:]
                 action = policy(state)
+                pdb.set_trace()
 
             env.step(action)
         completed_episodes += 1
