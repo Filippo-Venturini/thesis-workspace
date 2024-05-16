@@ -13,7 +13,7 @@ max_cycles_default = 100
 
 minimap_mode_default = True
 default_reward_args = dict(
-    step_reward=0.0
+    step_reward=-0.1
 )
 
 def parallel_env(
@@ -161,10 +161,10 @@ class _parallel_env(magent_parallel_env, EzPickle):
                     pos.append([x, y, 0]) """
 
         center = int(map_size/2)
-        env.add_agents(handles[self.agentGroupID], method="custom", pos=[[30,30,0]])
+        env.add_agents(handles[self.agentGroupID], method="custom", pos=[[30,20,0]])
         #env.add_agents(handles[self.agentGroupID], method="custom", pos=[[center-1,center,0]])
 
         
-        print(env.get_pos(handles[self.agentGroupID]))
+        #print(env.get_pos(handles[self.agentGroupID]))
         
 
