@@ -9,7 +9,7 @@ QAgent = None
 for agent in custom_env.agent_iter():
     custom_env.reset()
     QAgent = QLearningAgent(custom_env, agent)
-    QAgent.train(100000)
+    QAgent.train(1000)
     break
 
 def policy(state):
