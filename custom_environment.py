@@ -85,7 +85,7 @@ def get_config(
     a = gw.AgentSymbol(g, index="any")
 
     cfg.add_reward_rule(
-        gw.Event(a, "at", (1, 20)), receiver=a, value=100
+        gw.Event(a, "at", (19, 20)), receiver=a, value=100
     )
 
     return cfg

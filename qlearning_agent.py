@@ -3,14 +3,14 @@ import random
 from pettingzoo.utils.env import AECEnv
 
 class QLearningAgent:
-    def __init__(self, env: AECEnv, agent, learning_rate=0.99, gamma=0.2, epsilon=0.9, epsilon_decay=0.99, epsilon_min=0.01):
+    def __init__(self, env: AECEnv, agent, learning_rate=0.8, gamma=0.95, epsilon=0.2, epsilon_decay=0.99, epsilon_min=0.01):
         self.env = env
         self.agent = agent
         n_observation = np.prod(env.state().shape[:2])
         n_x_coordinates = env.state().shape[0]
         n_y_coordinates = env.state().shape[1]
         n_actions = np.prod(env.action_space(agent).n)
-        self.q_table = np.random.randint(0, 5, (n_x_coordinates, n_y_coordinates, n_actions))
+        self.q_table = np.zeros((n_x_coordinates, n_y_coordinates, n_actions))
         self.learning_rate = learning_rate
         self.discount_factor = gamma
         self.epsilon = epsilon
@@ -24,7 +24,10 @@ class QLearningAgent:
         if random.uniform(0, 1) < self.epsilon:
             return self.env.action_space(self.agent).sample()
         else:
-            return np.argmax(self.q_table[state_coordinates[0]][state_coordinates[1]])
+            max_value = np.max(self.q_table[state_coordinates[0]][state_coordinates[1]])
+
+            max_indices = np.where(self.q_table[state_coordinates[0]][state_coordinates[1]] == max_value)[0]
+            return random.choice(max_indices)
         
     def get_table_coordinates(self, state):
         return np.round(state * (self.env.state().shape[0] - 1)).astype(int)
